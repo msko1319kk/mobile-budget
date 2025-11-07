@@ -111,12 +111,15 @@
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid #eee;
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 8px;
         }
 
         .item-group:last-child {
             border-bottom: none;
             margin-bottom: 0;
-            padding-bottom: 0;
+            padding-bottom: 12px;
         }
 
         .item-group label {
@@ -132,8 +135,8 @@
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            font-size: 28px;
-            margin-bottom: 5px;
+            font-size: 24px;
+            margin-bottom: 8px;
         }
 
         .item-group input:focus {
@@ -142,20 +145,32 @@
             box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
         }
 
-        .item-note {
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .input-row input {
+            margin-bottom: 0;
+        }
+
+        .input-label {
             font-size: 16px;
-            color: #999;
-            margin-top: 3px;
+            color: #666;
+            margin-bottom: 3px;
+            display: block;
         }
 
         .add-item-btn {
             background: #667eea;
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 12px 15px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 20px;
             width: 100%;
             margin-top: 10px;
             font-weight: 600;
@@ -169,12 +184,13 @@
             background: #ff6b6b;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 8px 10px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             margin-top: 8px;
             width: 100%;
+            font-weight: 600;
         }
 
         .remove-btn:hover {
@@ -289,23 +305,15 @@
                             <div class="value" id="incomeSummary">₩0</div>
                         </div>
                     </div>
-                    <div class="item-group">
-                        <label>BM (기업)</label>
-                        <input type="number" class="income" placeholder="금액 입력" data-name="BM" value="3400000">
-                    </div>
-                    <div class="item-group">
-                        <label>MS (우리 1002-494)</label>
-                        <input type="number" class="income" placeholder="금액 입력" data-name="MS" value="3613056">
-                    </div>
+                    <div id="incomeContainer"></div>
                     <button class="add-item-btn" onclick="addIncomeItem()">+ 수입 항목 추가</button>
-                    <div id="incomeItems"></div>
                 </div>
             </div>
 
             <!-- 생활비 섹션 -->
             <div class="section">
                 <div class="section-header" onclick="toggleSection(this)">
-                    <span>🛒 생활비 (보험, 공과금, 인터넷 등)</span>
+                    <span>🛒 생활비</span>
                     <span class="toggle">▼</span>
                 </div>
                 <div class="section-content">
@@ -315,70 +323,15 @@
                             <div class="value" id="lifeSummary">₩0</div>
                         </div>
                     </div>
-                    <div class="item-group">
-                        <label>현대해상보험(4건)</label>
-                        <input type="number" class="life-expense" placeholder="금액 입력" data-name="현대해상보험(4건)" value="229730">
-                        <div class="item-note">결제일: 5일</div>
-                    </div>
-                    <div class="item-group">
-                        <label>준규 보험(한화)</label>
-                        <input type="number" class="life-expense" placeholder="금액 입력" data-name="준규 보험(한화)" value="66370">
-                        <div class="item-note">결제일: 11일</div>
-                    </div>
-                    <div class="item-group">
-                        <label>오빠 치과보험 에이스(4건)</label>
-                        <input type="number" class="life-expense" placeholder="금액 입력" data-name="오빠 치과보험 에이스(4건)" value="30730">
-                    </div>
-                    <div class="item-group">
-                        <label>LG 유플러스 TV, 인터넷</label>
-                        <input type="number" class="life-expense" placeholder="금액 입력" data-name="LG 유플러스 TV, 인터넷" value="46200">
-                        <div class="item-note">결제일: 10일</div>
-                    </div>
-                    <div class="item-group">
-                        <label>쿠쿠 정수기</label>
-                        <input type="number" class="life-expense" placeholder="금액 입력" data-name="쿠쿠 정수기" value="25900">
-                        <div class="item-note">결제일: 10일</div>
-                    </div>
-                    <div class="item-group">
-                        <label>준규 핸드폰(SK)</label>
-                        <input type="number" class="life-expense" placeholder="금액 입력" data-name="준규 핸드폰(SK)" value="23400">
-                        <div class="item-note">결제일: 11일</div>
-                    </div>
-                    <div class="item-group">
-                        <label>태규 핸드폰(LG)</label>
-                        <input type="number" class="life-expense" placeholder="금액 입력" data-name="태규 핸드폰(LG)" value="23400">
-                        <div class="item-note">결제일: 11일</div>
-                    </div>
-                    <div class="item-group">
-                        <label>도시가스</label>
-                        <input type="number" class="life-expense" placeholder="금액 입력" data-name="도시가스" value="7880">
-                        <div class="item-note">결제일: 14일 (짝수달만)</div>
-                    </div>
-                    <div class="item-group">
-                        <label>쿠팡 월결제</label>
-                        <input type="number" class="life-expense" placeholder="금액 입력" data-name="쿠팡 월결제" value="7890">
-                    </div>
-                    <div class="item-group">
-                        <label>네이버 페이 월결제</label>
-                        <input type="number" class="life-expense" placeholder="금액 입력" data-name="네이버 페이 월결제" value="4900">
-                    </div>
-                    <div class="item-group">
-                        <label>관리비</label>
-                        <input type="number" class="life-expense" placeholder="금액 입력" data-name="관리비" value="250000">
-                    </div>
-                    <div class="item-group">
-                        <label>식비, 생필품, 장보기 등</label>
-                        <input type="number" class="life-expense" placeholder="금액 입력" data-name="식비, 생필품, 장보기 등" value="200000">
-                    </div>
+                    <div id="lifeContainer"></div>
                     <button class="add-item-btn" onclick="addLifeExpense()">+ 생활비 항목 추가</button>
-                    <div id="lifeItems"></div>
                 </div>
             </div>
 
             <!-- 활동비 섹션 -->
             <div class="section">
                 <div class="section-header" onclick="toggleSection(this)">
-                    <span>👤 활동비 (BM, MS 개인 활동비)</span>
+                    <span>👤 활동비</span>
                     <span class="toggle">▼</span>
                 </div>
                 <div class="section-content">
@@ -388,54 +341,15 @@
                             <div class="value" id="activitySummary">₩0</div>
                         </div>
                     </div>
-                    <div class="item-group">
-                        <label>@병민</label>
-                        <input type="number" class="activity-expense" placeholder="금액 입력" data-name="@병민" value="450000">
-                        <div class="item-note">식비: 250,000 / 차&주류비+용돈: 140,000 / 핸드폰비: 60,000</div>
-                    </div>
-                    <div class="item-group">
-                        <label>@민서</label>
-                        <input type="number" class="activity-expense" placeholder="금액 입력" data-name="@민서" value="260000">
-                        <div class="item-note">출퇴근차비: 100,000 / 커피&삭사+용돈: 100,000 / 핸드폰비: 60,000</div>
-                    </div>
-                    <div class="item-group">
-                        <label>구글 드라이브</label>
-                        <input type="number" class="activity-expense" placeholder="금액 입력" data-name="구글 드라이브" value="2400">
-                        <div class="item-note">결제일: 19일</div>
-                    </div>
-                    <div class="item-group">
-                        <label>클로드 AI</label>
-                        <input type="number" class="activity-expense" placeholder="금액 입력" data-name="클로드 AI" value="0">
-                    </div>
-                    <div class="item-group">
-                        <label>미리캔버스</label>
-                        <input type="number" class="activity-expense" placeholder="금액 입력" data-name="미리캔버스" value="0">
-                    </div>
-                    <div class="item-group">
-                        <label>카카오 매달 5일</label>
-                        <input type="number" class="activity-expense" placeholder="금액 입력" data-name="카카오" value="50000">
-                    </div>
-                    <div class="item-group">
-                        <label>망고보드</label>
-                        <input type="number" class="activity-expense" placeholder="금액 입력" data-name="망고보드" value="0">
-                    </div>
-                    <div class="item-group">
-                        <label>챗GPT</label>
-                        <input type="number" class="activity-expense" placeholder="금액 입력" data-name="챗GPT" value="0">
-                    </div>
-                    <div class="item-group">
-                        <label>캡컷</label>
-                        <input type="number" class="activity-expense" placeholder="금액 입력" data-name="캡컷" value="0">
-                    </div>
+                    <div id="activityContainer"></div>
                     <button class="add-item-btn" onclick="addActivityExpense()">+ 활동비 항목 추가</button>
-                    <div id="activityItems"></div>
                 </div>
             </div>
 
             <!-- 교육비 섹션 -->
             <div class="section">
                 <div class="section-header" onclick="toggleSection(this)">
-                    <span>📚 교육비 (학원, 운동, 미술 등)</span>
+                    <span>📚 교육비</span>
                     <span class="toggle">▼</span>
                 </div>
                 <div class="section-content">
@@ -445,60 +359,15 @@
                             <div class="value" id="educationSummary">₩0</div>
                         </div>
                     </div>
-                    <div class="item-group">
-                        <label>와이케이(영,수과) 3과목 준규</label>
-                        <input type="number" class="education-expense" placeholder="금액 입력" data-name="와이케이(영,수과) 3과목 준규" value="820000">
-                        <div class="item-note">결제일: 말일</div>
-                    </div>
-                    <div class="item-group">
-                        <label>와이케이 교재비 준규</label>
-                        <input type="number" class="education-expense" placeholder="금액 입력" data-name="와이케이 교재비 준규" value="50000">
-                    </div>
-                    <div class="item-group">
-                        <label>더올바스켓 농구(선수반) 준규</label>
-                        <input type="number" class="education-expense" placeholder="금액 입력" data-name="더올바스켓 농구(선수반) 준규" value="240000">
-                        <div class="item-note">결제일: 25일</div>
-                    </div>
-                    <div class="item-group">
-                        <label>경기 비용 / 준규</label>
-                        <input type="number" class="education-expense" placeholder="금액 입력" data-name="경기 비용 / 준규" value="50000">
-                    </div>
-                    <div class="item-group">
-                        <label>C&C 미술 / 태규 주 3회</label>
-                        <input type="number" class="education-expense" placeholder="금액 입력" data-name="C&C 미술 / 태규 주 3회" value="450000">
-                        <div class="item-note">결제일: 7일</div>
-                    </div>
-                    <div class="item-group">
-                        <label>C&C 미술 재료비 시험비 / 태규</label>
-                        <input type="number" class="education-expense" placeholder="금액 입력" data-name="C&C 미술 재료비 시험비 / 태규" value="25000">
-                    </div>
-                    <div class="item-group">
-                        <label>화정초 운동 / 태규</label>
-                        <input type="number" class="education-expense" placeholder="금액 입력" data-name="화정초 운동 / 태규" value="0">
-                    </div>
-                    <div class="item-group">
-                        <label>패드 수업 / 태규</label>
-                        <input type="number" class="education-expense" placeholder="금액 입력" data-name="패드 수업 / 태규" value="0">
-                    </div>
-                    <div class="item-group">
-                        <label>준규 용돈</label>
-                        <input type="number" class="education-expense" placeholder="금액 입력" data-name="준규 용돈" value="50000">
-                        <div class="item-note">결제일: 1일</div>
-                    </div>
-                    <div class="item-group">
-                        <label>태규 용돈</label>
-                        <input type="number" class="education-expense" placeholder="금액 입력" data-name="태규 용돈" value="50000">
-                        <div class="item-note">결제일: 1일</div>
-                    </div>
+                    <div id="educationContainer"></div>
                     <button class="add-item-btn" onclick="addEducationExpense()">+ 교육비 항목 추가</button>
-                    <div id="educationItems"></div>
                 </div>
             </div>
 
             <!-- 주거비 섹션 -->
             <div class="section">
                 <div class="section-header" onclick="toggleSection(this)">
-                    <span>🏠 주거비 (대출, 월세 등)</span>
+                    <span>🏠 주거비</span>
                     <span class="toggle">▼</span>
                 </div>
                 <div class="section-content">
@@ -508,46 +377,15 @@
                             <div class="value" id="housingSummary">₩0</div>
                         </div>
                     </div>
-                    <div class="item-group">
-                        <label>의정부 자가 주담대(원금+이자)</label>
-                        <input type="number" class="housing-expense" placeholder="금액 입력" data-name="의정부 자가 주담대(원금+이자)" value="760000">
-                    </div>
-                    <div class="item-group">
-                        <label>마통 이자</label>
-                        <input type="number" class="housing-expense" placeholder="금액 입력" data-name="마통 이자" value="66370">
-                    </div>
-                    <div class="item-group">
-                        <label>토스 신용대출 400만원 이자</label>
-                        <input type="number" class="housing-expense" placeholder="금액 입력" data-name="토스 신용대출 400만원 이자" value="30730">
-                    </div>
-                    <div class="item-group">
-                        <label>오빠 용인 대출 3천 이자</label>
-                        <input type="number" class="housing-expense" placeholder="금액 입력" data-name="오빠 용인 대출 3천 이자" value="0">
-                        <div class="item-note">기한: 26년 7월 24일까지</div>
-                    </div>
-                    <div class="item-group">
-                        <label>별빛부영 월세</label>
-                        <input type="number" class="housing-expense" placeholder="금액 입력" data-name="별빛부영 월세" value="1050000">
-                    </div>
-                    <div class="item-group">
-                        <label>의정부 포뷰 월세</label>
-                        <input type="number" class="housing-expense" placeholder="금액 입력" data-name="의정부 포뷰 월세" value="0">
-                        <div class="item-note">음수 입력 가능 (-1050000)</div>
-                    </div>
-                    <div class="item-group">
-                        <label>현대보험대출이자(매월)</label>
-                        <input type="number" class="housing-expense" placeholder="금액 입력" data-name="현대보험대출이자(매월)" value="0">
-                        <div class="item-note">결제일: 5일</div>
-                    </div>
+                    <div id="housingContainer"></div>
                     <button class="add-item-btn" onclick="addHousingExpense()">+ 주거비 항목 추가</button>
-                    <div id="housingItems"></div>
                 </div>
             </div>
 
             <!-- 저축 섹션 -->
             <div class="section">
                 <div class="section-header" onclick="toggleSection(this)">
-                    <span>🏦 저축 (적금, 펀드, 주식 등)</span>
+                    <span>🏦 저축</span>
                     <span class="toggle">▼</span>
                 </div>
                 <div class="section-content">
@@ -557,38 +395,15 @@
                             <div class="value" id="savingsSummary">₩0</div>
                         </div>
                     </div>
-                    <div class="item-group">
-                        <label>규규 저축(오빠)</label>
-                        <input type="number" class="savings-expense" placeholder="금액 입력" data-name="규규 저축(오빠)" value="200000">
-                        <div class="item-note">결제일: 5일</div>
-                    </div>
-                    <div class="item-group">
-                        <label>토스 자동 주식</label>
-                        <input type="number" class="savings-expense" placeholder="금액 입력" data-name="토스 자동 주식" value="200000">
-                    </div>
-                    <div class="item-group">
-                        <label>연금저축펀드(미래에셋)</label>
-                        <input type="number" class="savings-expense" placeholder="금액 입력" data-name="연금저축펀드(미래에셋)" value="500000">
-                        <div class="item-note">결제일: 말일</div>
-                    </div>
-                    <div class="item-group">
-                        <label>토스 적금</label>
-                        <input type="number" class="savings-expense" placeholder="금액 입력" data-name="토스 적금" value="200000">
-                    </div>
-                    <div class="item-group">
-                        <label>케이뱅크(경조사)</label>
-                        <input type="number" class="savings-expense" placeholder="금액 입력" data-name="케이뱅크(경조사)" value="100000">
-                        <div class="item-note">결제일: 1일</div>
-                    </div>
+                    <div id="savingsContainer"></div>
                     <button class="add-item-btn" onclick="addSavingsExpense()">+ 저축 항목 추가</button>
-                    <div id="savingsItems"></div>
                 </div>
             </div>
 
             <!-- 비정기 섹션 -->
             <div class="section">
                 <div class="section-header" onclick="toggleSection(this)">
-                    <span>📌 비정기 (경조사, 세금 등)</span>
+                    <span>📌 비정기</span>
                     <span class="toggle">▼</span>
                 </div>
                 <div class="section-content">
@@ -598,25 +413,8 @@
                             <div class="value" id="miscSummary">₩0</div>
                         </div>
                     </div>
-                    <div class="item-group">
-                        <label>재산세 (1년에 2번)</label>
-                        <input type="number" class="misc-expense" placeholder="금액 입력" data-name="재산세" value="0">
-                    </div>
-                    <div class="item-group">
-                        <label>자동차세 (1년에 2번)</label>
-                        <input type="number" class="misc-expense" placeholder="금액 입력" data-name="자동차세" value="0">
-                    </div>
-                    <div class="item-group">
-                        <label>조의금, 축의금 등</label>
-                        <input type="number" class="misc-expense" placeholder="금액 입력" data-name="조의금, 축의금 등" value="100000">
-                        <div class="item-note">결제일: 1일</div>
-                    </div>
-                    <div class="item-group">
-                        <label>주민세, 기타 등등</label>
-                        <input type="number" class="misc-expense" placeholder="금액 입력" data-name="주민세, 기타 등등" value="0">
-                    </div>
+                    <div id="miscContainer"></div>
                     <button class="add-item-btn" onclick="addMiscExpense()">+ 비정기 항목 추가</button>
-                    <div id="miscItems"></div>
                 </div>
             </div>
         </div>
@@ -628,6 +426,73 @@
     </div>
 
     <script>
+        // 데이터 정의
+        const defaultData = {
+            income: [
+                { name: 'BM', day: '10일', amount: 3400000 },
+                { name: 'MS', day: '30일', amount: 3613056 }
+            ],
+            life: [
+                { name: '현대해상보험(4건)', day: '5일', amount: 229730 },
+                { name: '준규 보험(한화)', day: '11일', amount: 66370 },
+                { name: '오빠 치과보험 에이스(4건)', day: '', amount: 30730 },
+                { name: 'LG 유플러스 TV, 인터넷', day: '10일', amount: 46200 },
+                { name: '쿠쿠 정수기', day: '10일', amount: 25900 },
+                { name: '준규 핸드폰(SK)', day: '11일', amount: 23400 },
+                { name: '태규 핸드폰(LG)', day: '11일', amount: 23400 },
+                { name: '도시가스', day: '14일', amount: 7880 },
+                { name: '쿠팡 월결제', day: '', amount: 7890 },
+                { name: '네이버 페이 월결제', day: '말일', amount: 4900 },
+                { name: '관리비', day: '', amount: 250000 },
+                { name: '식비, 생필품, 장보기 등', day: '', amount: 200000 }
+            ],
+            activity: [
+                { name: '@병민', day: '', amount: 450000 },
+                { name: '@민서', day: '', amount: 260000 },
+                { name: '구글 드라이브', day: '19일', amount: 2400 },
+                { name: '클로드 AI', day: '', amount: 0 },
+                { name: '미리캔버스', day: '', amount: 0 },
+                { name: '카카오', day: '5일', amount: 50000 },
+                { name: '망고보드', day: '', amount: 0 },
+                { name: '챗GPT', day: '', amount: 0 },
+                { name: '캡컷', day: '', amount: 0 }
+            ],
+            education: [
+                { name: '와이케이(영,수과) 3과목 준규', day: '말일', amount: 820000 },
+                { name: '와이케이 교재비 준규', day: '말일', amount: 50000 },
+                { name: '더올바스켓 농구(선수반) 준규', day: '25일', amount: 240000 },
+                { name: '경기 비용 / 준규', day: '', amount: 50000 },
+                { name: 'C&C 미술 / 태규 주 3회', day: '7일', amount: 450000 },
+                { name: 'C&C 미술 재료비 시험비 / 태규', day: '요청시', amount: 25000 },
+                { name: '화정초 운동 / 태규', day: '', amount: 0 },
+                { name: '패드 수업 / 태규', day: '', amount: 0 },
+                { name: '준규 용돈', day: '1일', amount: 50000 },
+                { name: '태규 용돈', day: '1일', amount: 50000 }
+            ],
+            housing: [
+                { name: '의정부 자가 주담대(원금+이자)', day: '', amount: 760000 },
+                { name: '마통 이자', day: '', amount: 66370 },
+                { name: '토스 신용대출 400만원 이자', day: '', amount: 30730 },
+                { name: '오빠 용인 대출 3천 이자', day: '', amount: 0 },
+                { name: '별빛부영 월세', day: '', amount: 1050000 },
+                { name: '의정부 포뷰 월세', day: '', amount: 0 },
+                { name: '현대보험대출이자(매월)', day: '5일', amount: 0 }
+            ],
+            savings: [
+                { name: '규규 저축(오빠)', day: '5일', amount: 200000 },
+                { name: '토스 자동 주식', day: '', amount: 200000 },
+                { name: '연금저축펀드(미래에셋)', day: '말일', amount: 500000 },
+                { name: '토스 적금', day: '', amount: 200000 },
+                { name: '케이뱅크(경조사)', day: '1일', amount: 100000 }
+            ],
+            misc: [
+                { name: '재산세', day: '', amount: 0 },
+                { name: '자동차세', day: '', amount: 0 },
+                { name: '조의금, 축의금 등', day: '1일', amount: 100000 },
+                { name: '주민세, 기타 등등', day: '', amount: 0 }
+            ]
+        };
+
         // 현재 월을 기본값으로 설정
         const today = new Date();
         const year = today.getFullYear();
@@ -651,123 +516,164 @@
             }).format(num);
         }
 
-        // 합계 계산
-        function calculateSummary() {
-            const incomeInputs = document.querySelectorAll('.income');
-            const lifeInputs = document.querySelectorAll('.life-expense');
-            const activityInputs = document.querySelectorAll('.activity-expense');
-            const educationInputs = document.querySelectorAll('.education-expense');
-            const housingInputs = document.querySelectorAll('.housing-expense');
-            const savingsInputs = document.querySelectorAll('.savings-expense');
-            const miscInputs = document.querySelectorAll('.misc-expense');
-
-            const income = Array.from(incomeInputs).reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
-            const life = Array.from(lifeInputs).reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
-            const activity = Array.from(activityInputs).reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
-            const education = Array.from(educationInputs).reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
-            const housing = Array.from(housingInputs).reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
-            const savings = Array.from(savingsInputs).reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
-            const misc = Array.from(miscInputs).reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
-
-            document.getElementById('incomeSummary').textContent = formatNumber(income);
-            document.getElementById('lifeSummary').textContent = formatNumber(life);
-            document.getElementById('activitySummary').textContent = formatNumber(activity);
-            document.getElementById('educationSummary').textContent = formatNumber(education);
-            document.getElementById('housingSummary').textContent = formatNumber(housing);
-            document.getElementById('savingsSummary').textContent = formatNumber(savings);
-            document.getElementById('miscSummary').textContent = formatNumber(misc);
+        // 항목 HTML 생성
+        function createItemHTML(type, item, index) {
+            return `
+                <div class="item-group">
+                    <label>${item.name}</label>
+                    <div style="margin-bottom: 8px;">
+                        <span class="input-label">결제일</span>
+                        <input type="text" placeholder="예: 5일, 말일" value="${item.day}" onchange="calculateSummary()" style="font-size: 20px;">
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <span class="input-label">금액</span>
+                        <input type="number" class="${type}-expense" placeholder="금액 입력" value="${item.amount}" onchange="calculateSummary()" style="font-size: 20px;">
+                    </div>
+                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+                </div>
+            `;
         }
 
-        // 동적 항목 추가
+        // 초기 데이터 렌더링
+        function initializeData() {
+            Object.keys(defaultData).forEach(type => {
+                const container = document.getElementById(`${type}Container`);
+                container.innerHTML = defaultData[type].map((item, index) => 
+                    createItemHTML(type, item, index)
+                ).join('');
+            });
+        }
+
+        // 합계 계산
+        function calculateSummary() {
+            const types = ['income', 'life', 'activity', 'education', 'housing', 'savings', 'misc'];
+            
+            types.forEach(type => {
+                const inputs = document.querySelectorAll(`.${type}-expense`);
+                const total = Array.from(inputs).reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
+                const summaryId = type === 'income' ? 'incomeSummary' : type + 'Summary';
+                document.getElementById(summaryId).textContent = formatNumber(total);
+            });
+        }
+
+        // 항목 추가 함수
         function addIncomeItem() {
-            const container = document.getElementById('incomeItems');
-            const itemGroup = document.createElement('div');
-            itemGroup.className = 'item-group';
-            itemGroup.innerHTML = `
-                <label>새 수입 항목</label>
-                <input type="text" placeholder="항목명 입력">
-                <input type="number" class="income" placeholder="금액 입력" value="0">
-                <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+            const container = document.getElementById('incomeContainer');
+            const html = `
+                <div class="item-group">
+                    <label>새 수입 항목</label>
+                    <input type="text" placeholder="항목명 입력" style="font-size: 24px;">
+                    <div style="margin-bottom: 8px;">
+                        <span class="input-label">결제일</span>
+                        <input type="text" placeholder="예: 5일, 10일" style="font-size: 20px;">
+                    </div>
+                    <input type="number" class="income-expense" placeholder="금액 입력" value="0" onchange="calculateSummary()" style="font-size: 24px;">
+                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+                </div>
             `;
-            container.appendChild(itemGroup);
+            container.insertAdjacentHTML('beforeend', html);
         }
 
         function addLifeExpense() {
-            const container = document.getElementById('lifeItems');
-            const itemGroup = document.createElement('div');
-            itemGroup.className = 'item-group';
-            itemGroup.innerHTML = `
-                <label>새 생활비 항목</label>
-                <input type="text" placeholder="항목명 입력">
-                <input type="number" class="life-expense" placeholder="금액 입력" value="0">
-                <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+            const container = document.getElementById('lifeContainer');
+            const html = `
+                <div class="item-group">
+                    <label>새 생활비 항목</label>
+                    <input type="text" placeholder="항목명 입력" style="font-size: 24px;">
+                    <div style="margin-bottom: 8px;">
+                        <span class="input-label">결제일</span>
+                        <input type="text" placeholder="예: 5일, 말일" style="font-size: 20px;">
+                    </div>
+                    <input type="number" class="life-expense" placeholder="금액 입력" value="0" onchange="calculateSummary()" style="font-size: 24px;">
+                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+                </div>
             `;
-            container.appendChild(itemGroup);
+            container.insertAdjacentHTML('beforeend', html);
         }
 
         function addActivityExpense() {
-            const container = document.getElementById('activityItems');
-            const itemGroup = document.createElement('div');
-            itemGroup.className = 'item-group';
-            itemGroup.innerHTML = `
-                <label>새 활동비 항목</label>
-                <input type="text" placeholder="항목명 입력">
-                <input type="number" class="activity-expense" placeholder="금액 입력" value="0">
-                <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+            const container = document.getElementById('activityContainer');
+            const html = `
+                <div class="item-group">
+                    <label>새 활동비 항목</label>
+                    <input type="text" placeholder="항목명 입력" style="font-size: 24px;">
+                    <div style="margin-bottom: 8px;">
+                        <span class="input-label">결제일</span>
+                        <input type="text" placeholder="예: 5일, 19일" style="font-size: 20px;">
+                    </div>
+                    <input type="number" class="activity-expense" placeholder="금액 입력" value="0" onchange="calculateSummary()" style="font-size: 24px;">
+                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+                </div>
             `;
-            container.appendChild(itemGroup);
+            container.insertAdjacentHTML('beforeend', html);
         }
 
         function addEducationExpense() {
-            const container = document.getElementById('educationItems');
-            const itemGroup = document.createElement('div');
-            itemGroup.className = 'item-group';
-            itemGroup.innerHTML = `
-                <label>새 교육비 항목</label>
-                <input type="text" placeholder="항목명 입력">
-                <input type="number" class="education-expense" placeholder="금액 입력" value="0">
-                <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+            const container = document.getElementById('educationContainer');
+            const html = `
+                <div class="item-group">
+                    <label>새 교육비 항목</label>
+                    <input type="text" placeholder="항목명 입력" style="font-size: 24px;">
+                    <div style="margin-bottom: 8px;">
+                        <span class="input-label">결제일</span>
+                        <input type="text" placeholder="예: 말일, 1일" style="font-size: 20px;">
+                    </div>
+                    <input type="number" class="education-expense" placeholder="금액 입력" value="0" onchange="calculateSummary()" style="font-size: 24px;">
+                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+                </div>
             `;
-            container.appendChild(itemGroup);
+            container.insertAdjacentHTML('beforeend', html);
         }
 
         function addHousingExpense() {
-            const container = document.getElementById('housingItems');
-            const itemGroup = document.createElement('div');
-            itemGroup.className = 'item-group';
-            itemGroup.innerHTML = `
-                <label>새 주거비 항목</label>
-                <input type="text" placeholder="항목명 입력">
-                <input type="number" class="housing-expense" placeholder="금액 입력" value="0">
-                <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+            const container = document.getElementById('housingContainer');
+            const html = `
+                <div class="item-group">
+                    <label>새 주거비 항목</label>
+                    <input type="text" placeholder="항목명 입력" style="font-size: 24px;">
+                    <div style="margin-bottom: 8px;">
+                        <span class="input-label">결제일</span>
+                        <input type="text" placeholder="예: 5일, 10일" style="font-size: 20px;">
+                    </div>
+                    <input type="number" class="housing-expense" placeholder="금액 입력" value="0" onchange="calculateSummary()" style="font-size: 24px;">
+                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+                </div>
             `;
-            container.appendChild(itemGroup);
+            container.insertAdjacentHTML('beforeend', html);
         }
 
         function addSavingsExpense() {
-            const container = document.getElementById('savingsItems');
-            const itemGroup = document.createElement('div');
-            itemGroup.className = 'item-group';
-            itemGroup.innerHTML = `
-                <label>새 저축 항목</label>
-                <input type="text" placeholder="항목명 입력">
-                <input type="number" class="savings-expense" placeholder="금액 입력" value="0">
-                <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+            const container = document.getElementById('savingsContainer');
+            const html = `
+                <div class="item-group">
+                    <label>새 저축 항목</label>
+                    <input type="text" placeholder="항목명 입력" style="font-size: 24px;">
+                    <div style="margin-bottom: 8px;">
+                        <span class="input-label">결제일</span>
+                        <input type="text" placeholder="예: 5일, 말일" style="font-size: 20px;">
+                    </div>
+                    <input type="number" class="savings-expense" placeholder="금액 입력" value="0" onchange="calculateSummary()" style="font-size: 24px;">
+                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+                </div>
             `;
-            container.appendChild(itemGroup);
+            container.insertAdjacentHTML('beforeend', html);
         }
 
         function addMiscExpense() {
-            const container = document.getElementById('miscItems');
-            const itemGroup = document.createElement('div');
-            itemGroup.className = 'item-group';
-            itemGroup.innerHTML = `
-                <label>새 비정기 항목</label>
-                <input type="text" placeholder="항목명 입력">
-                <input type="number" class="misc-expense" placeholder="금액 입력" value="0">
-                <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+            const container = document.getElementById('miscContainer');
+            const html = `
+                <div class="item-group">
+                    <label>새 비정기 항목</label>
+                    <input type="text" placeholder="항목명 입력" style="font-size: 24px;">
+                    <div style="margin-bottom: 8px;">
+                        <span class="input-label">결제일</span>
+                        <input type="text" placeholder="예: 1일, 15일" style="font-size: 20px;">
+                    </div>
+                    <input type="number" class="misc-expense" placeholder="금액 입력" value="0" onchange="calculateSummary()" style="font-size: 24px;">
+                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+                </div>
             `;
-            container.appendChild(itemGroup);
+            container.insertAdjacentHTML('beforeend', html);
         }
 
         // 복사
@@ -775,102 +681,31 @@
             const month = document.getElementById('yearMonth').value;
             let text = `📱 가계부 입력 - ${month}\n\n`;
 
-            text += `💰 수입\n`;
-            document.querySelectorAll('.income').forEach(input => {
-                const name = input.dataset.name || '수입';
-                const value = parseInt(input.value) || 0;
-                text += `${name}: ₩${value.toLocaleString()}\n`;
-            });
-            document.querySelectorAll('#incomeItems input[type="text"]').forEach((input, index) => {
-                if (input.value) {
-                    const valueInput = input.nextElementSibling;
-                    const value = parseInt(valueInput.value) || 0;
-                    text += `${input.value}: ₩${value.toLocaleString()}\n`;
-                }
-            });
+            const types = [
+                { id: 'income', label: '💰 수입' },
+                { id: 'life', label: '🛒 생활비' },
+                { id: 'activity', label: '👤 활동비' },
+                { id: 'education', label: '📚 교육비' },
+                { id: 'housing', label: '🏠 주거비' },
+                { id: 'savings', label: '🏦 저축' },
+                { id: 'misc', label: '📌 비정기' }
+            ];
 
-            text += `\n🛒 생활비\n`;
-            document.querySelectorAll('.life-expense').forEach(input => {
-                const name = input.dataset.name || '생활비';
-                const value = parseInt(input.value) || 0;
-                text += `${name}: ₩${value.toLocaleString()}\n`;
-            });
-            document.querySelectorAll('#lifeItems input[type="text"]').forEach((input, index) => {
-                if (input.value) {
-                    const valueInput = input.nextElementSibling;
-                    const value = parseInt(valueInput.value) || 0;
-                    text += `${input.value}: ₩${value.toLocaleString()}\n`;
-                }
-            });
-
-            text += `\n👤 활동비\n`;
-            document.querySelectorAll('.activity-expense').forEach(input => {
-                const name = input.dataset.name || '활동비';
-                const value = parseInt(input.value) || 0;
-                text += `${name}: ₩${value.toLocaleString()}\n`;
-            });
-            document.querySelectorAll('#activityItems input[type="text"]').forEach((input, index) => {
-                if (input.value) {
-                    const valueInput = input.nextElementSibling;
-                    const value = parseInt(valueInput.value) || 0;
-                    text += `${input.value}: ₩${value.toLocaleString()}\n`;
-                }
-            });
-
-            text += `\n📚 교육비\n`;
-            document.querySelectorAll('.education-expense').forEach(input => {
-                const name = input.dataset.name || '교육비';
-                const value = parseInt(input.value) || 0;
-                text += `${name}: ₩${value.toLocaleString()}\n`;
-            });
-            document.querySelectorAll('#educationItems input[type="text"]').forEach((input, index) => {
-                if (input.value) {
-                    const valueInput = input.nextElementSibling;
-                    const value = parseInt(valueInput.value) || 0;
-                    text += `${input.value}: ₩${value.toLocaleString()}\n`;
-                }
-            });
-
-            text += `\n🏠 주거비\n`;
-            document.querySelectorAll('.housing-expense').forEach(input => {
-                const name = input.dataset.name || '주거비';
-                const value = parseInt(input.value) || 0;
-                text += `${name}: ₩${value.toLocaleString()}\n`;
-            });
-            document.querySelectorAll('#housingItems input[type="text"]').forEach((input, index) => {
-                if (input.value) {
-                    const valueInput = input.nextElementSibling;
-                    const value = parseInt(valueInput.value) || 0;
-                    text += `${input.value}: ₩${value.toLocaleString()}\n`;
-                }
-            });
-
-            text += `\n🏦 저축\n`;
-            document.querySelectorAll('.savings-expense').forEach(input => {
-                const name = input.dataset.name || '저축';
-                const value = parseInt(input.value) || 0;
-                text += `${name}: ₩${value.toLocaleString()}\n`;
-            });
-            document.querySelectorAll('#savingsItems input[type="text"]').forEach((input, index) => {
-                if (input.value) {
-                    const valueInput = input.nextElementSibling;
-                    const value = parseInt(valueInput.value) || 0;
-                    text += `${input.value}: ₩${value.toLocaleString()}\n`;
-                }
-            });
-
-            text += `\n📌 비정기\n`;
-            document.querySelectorAll('.misc-expense').forEach(input => {
-                const name = input.dataset.name || '비정기';
-                const value = parseInt(input.value) || 0;
-                text += `${name}: ₩${value.toLocaleString()}\n`;
-            });
-            document.querySelectorAll('#miscItems input[type="text"]').forEach((input, index) => {
-                if (input.value) {
-                    const valueInput = input.nextElementSibling;
-                    const value = parseInt(valueInput.value) || 0;
-                    text += `${input.value}: ₩${value.toLocaleString()}\n`;
-                }
+            types.forEach(type => {
+                text += `\n${type.label}\n`;
+                const container = document.getElementById(`${type.id}Container`);
+                const items = container.querySelectorAll('.item-group');
+                
+                items.forEach(item => {
+                    const label = item.querySelector('label').textContent;
+                    const dayInput = item.querySelectorAll('input')[0];
+                    const amountInput = item.querySelector(`input[class*="${type.id}-expense"]`);
+                    
+                    const day = dayInput && dayInput.value ? `(${dayInput.value})` : '';
+                    const amount = parseInt(amountInput.value) || 0;
+                    
+                    text += `${label} ${day}: ₩${amount.toLocaleString()}\n`;
+                });
             });
 
             navigator.clipboard.writeText(text).then(() => {
@@ -885,10 +720,8 @@
             }
         }
 
-        // 이벤트 리스너
-        document.addEventListener('input', calculateSummary);
-        
-        // 초기 계산
+        // 초기화
+        initializeData();
         calculateSummary();
     </script>
 </body>
