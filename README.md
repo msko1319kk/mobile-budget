@@ -81,7 +81,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 20px;
+            font-size: 26px;
             border-bottom: 2px solid #667eea;
         }
 
@@ -124,7 +124,7 @@
             font-weight: 500;
             margin-bottom: 8px;
             color: #333;
-            font-size: 22px;
+            font-size: 28px;
         }
 
         .item-group input {
@@ -132,7 +132,7 @@
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            font-size: 22px;
+            font-size: 28px;
             margin-bottom: 5px;
         }
 
@@ -193,7 +193,7 @@
             padding: 15px;
             border: none;
             border-radius: 10px;
-            font-size: 20px;
+            font-size: 26px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -240,7 +240,7 @@
         }
 
         .summary-item .value {
-            font-size: 24px;
+            font-size: 32px;
             font-weight: 700;
             color: #667eea;
         }
