@@ -30,37 +30,65 @@
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 25px;
+            padding: 12px;
             text-align: center;
         }
 
         .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+            font-size: 20px;
+            margin-bottom: 5px;
         }
 
         .month-selector {
             background: rgba(255, 255, 255, 0.2);
-            padding: 10px 15px;
-            border-radius: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
             display: flex;
             gap: 10px;
             align-items: center;
             justify-content: center;
+            font-size: 20px;
         }
 
         .month-selector input {
-            padding: 8px 12px;
+            padding: 10px 12px;
             border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            width: 120px;
+            border-radius: 6px;
+            font-size: 24px;
+            width: 140px;
             text-align: center;
+            font-weight: 600;
+        }
+
+        .total-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            margin: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .total-item {
+            text-align: center;
+        }
+
+        .total-item label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+
+        .total-item .value {
+            font-size: 24px;
+            font-weight: 700;
         }
 
         .content {
             padding: 0;
-            max-height: 60vh;
+            max-height: 70vh;
             overflow-y: auto;
         }
 
@@ -230,7 +258,7 @@
         }
 
         .summary-item .value {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             color: #667eea;
         }
@@ -242,7 +270,19 @@
             <h1>📱 모바일 가계부</h1>
             <div class="month-selector">
                 <label for="yearMonth">년월:</label>
-                <input type="month" id="yearMonth">
+                <input type="month" id="yearMonth" onchange="loadMonthData()">
+            </div>
+        </div>
+
+        <!-- 전체 합계 -->
+        <div class="total-summary">
+            <div class="total-item">
+                <label>총 수입</label>
+                <div class="value" id="totalIncome">₩0</div>
+            </div>
+            <div class="total-item">
+                <label>총 지출</label>
+                <div class="value" id="totalExpense">₩0</div>
             </div>
         </div>
 
@@ -256,7 +296,7 @@
                 <div class="section-content show">
                     <div class="summary">
                         <div class="summary-item">
-                            <label>총 수입</label>
+                            <label>소계</label>
                             <div class="value" id="incomeSummary">₩0</div>
                         </div>
                     </div>
@@ -467,42 +507,88 @@
             }).format(num);
         }
 
+        function getMonthKey() {
+            return document.getElementById('yearMonth').value;
+        }
+
+        function saveData() {
+            const monthKey = getMonthKey();
+            const data = {};
+
+            Object.keys(defaultData).forEach(type => {
+                data[type] = [];
+                const container = document.getElementById(`${type}Container`);
+                const items = container.querySelectorAll('.item-group');
+                
+                items.forEach(item => {
+                    const nameInput = item.querySelector('.item-name');
+                    const dayInput = item.querySelector('.item-day');
+                    const amountInput = item.querySelector(`input[class*="${type}-expense"]`);
+                    
+                    data[type].push({
+                        name: nameInput.value,
+                        day: dayInput.value,
+                        amount: parseInt(amountInput.value) || 0
+                    });
+                });
+            });
+
+            localStorage.setItem(`budget_${monthKey}`, JSON.stringify(data));
+            calculateSummary();
+        }
+
+        function loadMonthData() {
+            const monthKey = getMonthKey();
+            const savedData = localStorage.getItem(`budget_${monthKey}`);
+            const data = savedData ? JSON.parse(savedData) : defaultData;
+
+            Object.keys(data).forEach(type => {
+                const container = document.getElementById(`${type}Container`);
+                container.innerHTML = data[type].map((item) => 
+                    createItemHTML(type, item)
+                ).join('');
+            });
+
+            calculateSummary();
+        }
+
         function createItemHTML(type, item) {
             return `
                 <div class="item-group">
                     <span class="input-label">항목명</span>
-                    <input type="text" class="item-name" value="${item.name}" style="font-size: 24px;" onchange="calculateSummary()">
+                    <input type="text" class="item-name" value="${item.name}" style="font-size: 24px;" onchange="saveData()">
                     
                     <span class="input-label">결제일</span>
-                    <input type="text" class="item-day" placeholder="예: 5일, 말일" value="${item.day}" style="font-size: 20px;" onchange="calculateSummary()">
+                    <input type="text" class="item-day" placeholder="예: 5일, 말일" value="${item.day}" style="font-size: 20px;" onchange="saveData()">
                     
                     <span class="input-label">금액</span>
-                    <input type="number" class="${type}-expense" placeholder="금액 입력" value="${item.amount}" style="font-size: 24px;" onchange="calculateSummary()">
+                    <input type="number" class="${type}-expense" placeholder="금액 입력" value="${item.amount}" style="font-size: 24px;" onchange="saveData()">
                     
-                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">🗑️ 제거</button>
+                    <button class="remove-btn" onclick="this.parentElement.remove(); saveData();">🗑️ 제거</button>
                 </div>
             `;
         }
 
-        function initializeData() {
-            Object.keys(defaultData).forEach(type => {
-                const container = document.getElementById(`${type}Container`);
-                container.innerHTML = defaultData[type].map((item) => 
-                    createItemHTML(type, item)
-                ).join('');
-            });
-            calculateSummary();
-        }
-
         function calculateSummary() {
             const types = ['income', 'life', 'activity', 'education', 'housing', 'savings', 'misc'];
+            let totalIncome = 0;
+            let totalExpense = 0;
             
             types.forEach(type => {
                 const inputs = document.querySelectorAll(`.${type}-expense`);
                 const total = Array.from(inputs).reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
                 const summaryId = type === 'income' ? 'incomeSummary' : type + 'Summary';
                 document.getElementById(summaryId).textContent = formatNumber(total);
+
+                if (type === 'income') {
+                    totalIncome = total;
+                } else {
+                    totalExpense += total;
+                }
             });
+
+            document.getElementById('totalIncome').textContent = formatNumber(totalIncome);
+            document.getElementById('totalExpense').textContent = formatNumber(totalExpense);
         }
 
         function addNewItem(type) {
@@ -516,16 +602,16 @@
                     <input type="text" class="item-day" placeholder="예: 5일, 말일" style="font-size: 20px;">
                     
                     <span class="input-label">금액</span>
-                    <input type="number" class="${type}-expense" placeholder="금액 입력" value="0" style="font-size: 24px;" onchange="calculateSummary()">
+                    <input type="number" class="${type}-expense" placeholder="금액 입력" value="0" style="font-size: 24px;" onchange="saveData()">
                     
-                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">🗑️ 제거</button>
+                    <button class="remove-btn" onclick="this.parentElement.remove(); saveData();">🗑️ 제거</button>
                 </div>
             `;
             container.insertAdjacentHTML('beforeend', html);
         }
 
         function copyToClipboard() {
-            const month = document.getElementById('yearMonth').value;
+            const month = getMonthKey();
             let text = `📱 가계부 입력 - ${month}\n\n`;
 
             const types = [
@@ -564,12 +650,14 @@
         }
 
         function resetForm() {
-            if (confirm('정말 초기화하시겠습니까?')) {
-                location.reload();
+            if (confirm('이 달의 데이터를 초기화하시겠습니까?')) {
+                const monthKey = getMonthKey();
+                localStorage.removeItem(`budget_${monthKey}`);
+                loadMonthData();
             }
         }
 
-        initializeData();
+        loadMonthData();
     </script>
 </body>
 </html>
