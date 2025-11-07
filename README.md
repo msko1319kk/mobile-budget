@@ -35,7 +35,7 @@
         }
 
         .header h1 {
-            font-size: 24px;
+            font-size: 28px;
             margin-bottom: 10px;
         }
 
@@ -53,7 +53,7 @@
             padding: 8px 12px;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 18px;
             width: 120px;
             text-align: center;
         }
@@ -81,7 +81,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 16px;
+            font-size: 20px;
             border-bottom: 2px solid #667eea;
         }
 
@@ -124,7 +124,7 @@
             font-weight: 500;
             margin-bottom: 8px;
             color: #333;
-            font-size: 14px;
+            font-size: 22px;
         }
 
         .item-group input {
@@ -132,7 +132,7 @@
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 22px;
             margin-bottom: 5px;
         }
 
@@ -143,7 +143,7 @@
         }
 
         .item-note {
-            font-size: 12px;
+            font-size: 16px;
             color: #999;
             margin-top: 3px;
         }
@@ -155,7 +155,7 @@
             padding: 10px 15px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 16px;
             width: 100%;
             margin-top: 10px;
             font-weight: 600;
@@ -172,7 +172,7 @@
             padding: 5px 10px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 16px;
             margin-top: 8px;
             width: 100%;
         }
@@ -193,7 +193,7 @@
             padding: 15px;
             border: none;
             border-radius: 10px;
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -234,13 +234,13 @@
 
         .summary-item label {
             display: block;
-            font-size: 12px;
+            font-size: 16px;
             color: #666;
             margin-bottom: 5px;
         }
 
         .summary-item .value {
-            font-size: 18px;
+            font-size: 24px;
             font-weight: 700;
             color: #667eea;
         }
