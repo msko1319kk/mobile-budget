@@ -109,25 +109,15 @@
 
         .item-group {
             margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            background: #f9f9f9;
             padding: 12px;
+            background: #f9f9f9;
             border-radius: 8px;
+            border-bottom: 1px solid #eee;
         }
 
         .item-group:last-child {
             border-bottom: none;
             margin-bottom: 0;
-            padding-bottom: 12px;
-        }
-
-        .item-group label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 8px;
-            color: #333;
-            font-size: 28px;
         }
 
         .item-group input {
@@ -145,22 +135,12 @@
             box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
         }
 
-        .input-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .input-row input {
-            margin-bottom: 0;
-        }
-
         .input-label {
             font-size: 16px;
             color: #666;
             margin-bottom: 3px;
             display: block;
+            font-weight: 600;
         }
 
         .add-item-btn {
@@ -239,12 +219,6 @@
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 15px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .summary-item {
             text-align: center;
         }
 
@@ -259,25 +233,6 @@
             font-size: 32px;
             font-weight: 700;
             color: #667eea;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                border-radius: 0;
-                max-width: 100%;
-            }
-
-            body {
-                padding: 0;
-            }
-
-            .header {
-                padding: 20px;
-            }
-
-            .header h1 {
-                font-size: 20px;
-            }
         }
     </style>
 </head>
@@ -306,7 +261,7 @@
                         </div>
                     </div>
                     <div id="incomeContainer"></div>
-                    <button class="add-item-btn" onclick="addIncomeItem()">+ 수입 항목 추가</button>
+                    <button class="add-item-btn" onclick="addNewItem('income')">+ 수입 항목 추가</button>
                 </div>
             </div>
 
@@ -324,7 +279,7 @@
                         </div>
                     </div>
                     <div id="lifeContainer"></div>
-                    <button class="add-item-btn" onclick="addLifeExpense()">+ 생활비 항목 추가</button>
+                    <button class="add-item-btn" onclick="addNewItem('life')">+ 생활비 항목 추가</button>
                 </div>
             </div>
 
@@ -342,7 +297,7 @@
                         </div>
                     </div>
                     <div id="activityContainer"></div>
-                    <button class="add-item-btn" onclick="addActivityExpense()">+ 활동비 항목 추가</button>
+                    <button class="add-item-btn" onclick="addNewItem('activity')">+ 활동비 항목 추가</button>
                 </div>
             </div>
 
@@ -360,7 +315,7 @@
                         </div>
                     </div>
                     <div id="educationContainer"></div>
-                    <button class="add-item-btn" onclick="addEducationExpense()">+ 교육비 항목 추가</button>
+                    <button class="add-item-btn" onclick="addNewItem('education')">+ 교육비 항목 추가</button>
                 </div>
             </div>
 
@@ -378,7 +333,7 @@
                         </div>
                     </div>
                     <div id="housingContainer"></div>
-                    <button class="add-item-btn" onclick="addHousingExpense()">+ 주거비 항목 추가</button>
+                    <button class="add-item-btn" onclick="addNewItem('housing')">+ 주거비 항목 추가</button>
                 </div>
             </div>
 
@@ -396,7 +351,7 @@
                         </div>
                     </div>
                     <div id="savingsContainer"></div>
-                    <button class="add-item-btn" onclick="addSavingsExpense()">+ 저축 항목 추가</button>
+                    <button class="add-item-btn" onclick="addNewItem('savings')">+ 저축 항목 추가</button>
                 </div>
             </div>
 
@@ -414,7 +369,7 @@
                         </div>
                     </div>
                     <div id="miscContainer"></div>
-                    <button class="add-item-btn" onclick="addMiscExpense()">+ 비정기 항목 추가</button>
+                    <button class="add-item-btn" onclick="addNewItem('misc')">+ 비정기 항목 추가</button>
                 </div>
             </div>
         </div>
@@ -426,7 +381,6 @@
     </div>
 
     <script>
-        // 데이터 정의
         const defaultData = {
             income: [
                 { name: 'BM', day: '10일', amount: 3400000 },
@@ -493,20 +447,17 @@
             ]
         };
 
-        // 현재 월을 기본값으로 설정
         const today = new Date();
         const year = today.getFullYear();
         const month = String(today.getMonth() + 1).padStart(2, '0');
         document.getElementById('yearMonth').value = `${year}-${month}`;
 
-        // 섹션 토글
         function toggleSection(header) {
             header.classList.toggle('collapsed');
             const content = header.nextElementSibling;
             content.classList.toggle('show');
         }
 
-        // 숫자 포맷팅
         function formatNumber(num) {
             return new Intl.NumberFormat('ko-KR', {
                 style: 'currency',
@@ -516,35 +467,33 @@
             }).format(num);
         }
 
-        // 항목 HTML 생성
-        function createItemHTML(type, item, index) {
+        function createItemHTML(type, item) {
             return `
                 <div class="item-group">
-                    <label>${item.name}</label>
-                    <div style="margin-bottom: 8px;">
-                        <span class="input-label">결제일</span>
-                        <input type="text" placeholder="예: 5일, 말일" value="${item.day}" onchange="calculateSummary()" style="font-size: 20px;">
-                    </div>
-                    <div style="margin-bottom: 8px;">
-                        <span class="input-label">금액</span>
-                        <input type="number" class="${type}-expense" placeholder="금액 입력" value="${item.amount}" onchange="calculateSummary()" style="font-size: 20px;">
-                    </div>
-                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+                    <span class="input-label">항목명</span>
+                    <input type="text" class="item-name" value="${item.name}" style="font-size: 24px;" onchange="calculateSummary()">
+                    
+                    <span class="input-label">결제일</span>
+                    <input type="text" class="item-day" placeholder="예: 5일, 말일" value="${item.day}" style="font-size: 20px;" onchange="calculateSummary()">
+                    
+                    <span class="input-label">금액</span>
+                    <input type="number" class="${type}-expense" placeholder="금액 입력" value="${item.amount}" style="font-size: 24px;" onchange="calculateSummary()">
+                    
+                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">🗑️ 제거</button>
                 </div>
             `;
         }
 
-        // 초기 데이터 렌더링
         function initializeData() {
             Object.keys(defaultData).forEach(type => {
                 const container = document.getElementById(`${type}Container`);
-                container.innerHTML = defaultData[type].map((item, index) => 
-                    createItemHTML(type, item, index)
+                container.innerHTML = defaultData[type].map((item) => 
+                    createItemHTML(type, item)
                 ).join('');
             });
+            calculateSummary();
         }
 
-        // 합계 계산
         function calculateSummary() {
             const types = ['income', 'life', 'activity', 'education', 'housing', 'savings', 'misc'];
             
@@ -556,127 +505,25 @@
             });
         }
 
-        // 항목 추가 함수
-        function addIncomeItem() {
-            const container = document.getElementById('incomeContainer');
+        function addNewItem(type) {
+            const container = document.getElementById(`${type}Container`);
             const html = `
                 <div class="item-group">
-                    <label>새 수입 항목</label>
-                    <input type="text" placeholder="항목명 입력" style="font-size: 24px;">
-                    <div style="margin-bottom: 8px;">
-                        <span class="input-label">결제일</span>
-                        <input type="text" placeholder="예: 5일, 10일" style="font-size: 20px;">
-                    </div>
-                    <input type="number" class="income-expense" placeholder="금액 입력" value="0" onchange="calculateSummary()" style="font-size: 24px;">
-                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
+                    <span class="input-label">항목명</span>
+                    <input type="text" class="item-name" placeholder="항목명 입력" style="font-size: 24px;">
+                    
+                    <span class="input-label">결제일</span>
+                    <input type="text" class="item-day" placeholder="예: 5일, 말일" style="font-size: 20px;">
+                    
+                    <span class="input-label">금액</span>
+                    <input type="number" class="${type}-expense" placeholder="금액 입력" value="0" style="font-size: 24px;" onchange="calculateSummary()">
+                    
+                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">🗑️ 제거</button>
                 </div>
             `;
             container.insertAdjacentHTML('beforeend', html);
         }
 
-        function addLifeExpense() {
-            const container = document.getElementById('lifeContainer');
-            const html = `
-                <div class="item-group">
-                    <label>새 생활비 항목</label>
-                    <input type="text" placeholder="항목명 입력" style="font-size: 24px;">
-                    <div style="margin-bottom: 8px;">
-                        <span class="input-label">결제일</span>
-                        <input type="text" placeholder="예: 5일, 말일" style="font-size: 20px;">
-                    </div>
-                    <input type="number" class="life-expense" placeholder="금액 입력" value="0" onchange="calculateSummary()" style="font-size: 24px;">
-                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', html);
-        }
-
-        function addActivityExpense() {
-            const container = document.getElementById('activityContainer');
-            const html = `
-                <div class="item-group">
-                    <label>새 활동비 항목</label>
-                    <input type="text" placeholder="항목명 입력" style="font-size: 24px;">
-                    <div style="margin-bottom: 8px;">
-                        <span class="input-label">결제일</span>
-                        <input type="text" placeholder="예: 5일, 19일" style="font-size: 20px;">
-                    </div>
-                    <input type="number" class="activity-expense" placeholder="금액 입력" value="0" onchange="calculateSummary()" style="font-size: 24px;">
-                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', html);
-        }
-
-        function addEducationExpense() {
-            const container = document.getElementById('educationContainer');
-            const html = `
-                <div class="item-group">
-                    <label>새 교육비 항목</label>
-                    <input type="text" placeholder="항목명 입력" style="font-size: 24px;">
-                    <div style="margin-bottom: 8px;">
-                        <span class="input-label">결제일</span>
-                        <input type="text" placeholder="예: 말일, 1일" style="font-size: 20px;">
-                    </div>
-                    <input type="number" class="education-expense" placeholder="금액 입력" value="0" onchange="calculateSummary()" style="font-size: 24px;">
-                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', html);
-        }
-
-        function addHousingExpense() {
-            const container = document.getElementById('housingContainer');
-            const html = `
-                <div class="item-group">
-                    <label>새 주거비 항목</label>
-                    <input type="text" placeholder="항목명 입력" style="font-size: 24px;">
-                    <div style="margin-bottom: 8px;">
-                        <span class="input-label">결제일</span>
-                        <input type="text" placeholder="예: 5일, 10일" style="font-size: 20px;">
-                    </div>
-                    <input type="number" class="housing-expense" placeholder="금액 입력" value="0" onchange="calculateSummary()" style="font-size: 24px;">
-                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', html);
-        }
-
-        function addSavingsExpense() {
-            const container = document.getElementById('savingsContainer');
-            const html = `
-                <div class="item-group">
-                    <label>새 저축 항목</label>
-                    <input type="text" placeholder="항목명 입력" style="font-size: 24px;">
-                    <div style="margin-bottom: 8px;">
-                        <span class="input-label">결제일</span>
-                        <input type="text" placeholder="예: 5일, 말일" style="font-size: 20px;">
-                    </div>
-                    <input type="number" class="savings-expense" placeholder="금액 입력" value="0" onchange="calculateSummary()" style="font-size: 24px;">
-                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', html);
-        }
-
-        function addMiscExpense() {
-            const container = document.getElementById('miscContainer');
-            const html = `
-                <div class="item-group">
-                    <label>새 비정기 항목</label>
-                    <input type="text" placeholder="항목명 입력" style="font-size: 24px;">
-                    <div style="margin-bottom: 8px;">
-                        <span class="input-label">결제일</span>
-                        <input type="text" placeholder="예: 1일, 15일" style="font-size: 20px;">
-                    </div>
-                    <input type="number" class="misc-expense" placeholder="금액 입력" value="0" onchange="calculateSummary()" style="font-size: 24px;">
-                    <button class="remove-btn" onclick="this.parentElement.remove(); calculateSummary();">제거</button>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', html);
-        }
-
-        // 복사
         function copyToClipboard() {
             const month = document.getElementById('yearMonth').value;
             let text = `📱 가계부 입력 - ${month}\n\n`;
@@ -697,14 +544,17 @@
                 const items = container.querySelectorAll('.item-group');
                 
                 items.forEach(item => {
-                    const label = item.querySelector('label').textContent;
-                    const dayInput = item.querySelectorAll('input')[0];
+                    const nameInput = item.querySelector('.item-name');
+                    const dayInput = item.querySelector('.item-day');
                     const amountInput = item.querySelector(`input[class*="${type.id}-expense"]`);
                     
+                    const name = nameInput.value || '항목';
                     const day = dayInput && dayInput.value ? `(${dayInput.value})` : '';
                     const amount = parseInt(amountInput.value) || 0;
                     
-                    text += `${label} ${day}: ₩${amount.toLocaleString()}\n`;
+                    if (amount > 0 || name !== '항목') {
+                        text += `${name} ${day}: ₩${amount.toLocaleString()}\n`;
+                    }
                 });
             });
 
@@ -713,16 +563,13 @@
             });
         }
 
-        // 초기화
         function resetForm() {
             if (confirm('정말 초기화하시겠습니까?')) {
                 location.reload();
             }
         }
 
-        // 초기화
         initializeData();
-        calculateSummary();
     </script>
 </body>
 </html>
