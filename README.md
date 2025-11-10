@@ -776,18 +776,33 @@
 
         function generateShareLink() {
             const monthKey = getMonthKey();
-            const savedData = localStorage.getItem(`budget_${monthKey}`);
-            
-            if (!savedData) {
-                alert('저장된 데이터가 없습니다.');
-                return;
-            }
+            const data = {};
 
-            const encoded = btoa(savedData);
-            const shareLink = `${window.location.href}?data=${encoded}&month=${monthKey}`;
+            Object.keys(defaultData).forEach(type => {
+                data[type] = [];
+                const container = document.getElementById(`${type}Container`);
+                const items = container.querySelectorAll('.item-group');
+                
+                items.forEach(item => {
+                    const nameInput = item.querySelector('.item-name');
+                    const dayInput = item.querySelector('.item-day');
+                    const amountInput = item.querySelector(`input[class*="${type}-expense"]`);
+                    
+                    data[type].push({
+                        name: nameInput.value,
+                        day: dayInput.value,
+                        amount: parseInt(amountInput.value) || 0
+                    });
+                });
+            });
+
+            const encoded = btoa(JSON.stringify(data));
+            const shareLink = `${window.location.href.split('?')[0]}?data=${encoded}&month=${monthKey}`;
             
             navigator.clipboard.writeText(shareLink).then(() => {
                 alert('✅ 공유 링크가 복사되었습니다!\n이 링크를 A에게 보내면 당신이 작성한 데이터를 볼 수 있습니다.');
+            }).catch(() => {
+                alert('⚠️ 클립보드 복사 실패. 수동으로 복사해주세요:\n' + shareLink);
             });
         }
 
