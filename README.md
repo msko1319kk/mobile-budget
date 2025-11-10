@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>모바일 가계부 입력 폼</title>
+    <title>규규네 가계부 입력 폼</title>
     <style>
         * {
             margin: 0;
@@ -776,8 +776,6 @@
         }
 
         function generateShareLink() {
-            alert('공유 준비 중...');
-            
             try {
                 const monthKey = getMonthKey();
                 const data = {};
@@ -808,7 +806,33 @@
                 const baseUrl = window.location.href.split('?')[0];
                 const shareLink = `${baseUrl}?data=${encoded}&month=${monthKey}`;
                 
-                alert(`✅ 공유 링크 생성 완료!\n\n${shareLink}\n\n이 링크를 카톡/문자로 보내세요!`);
+                // 팝업 생성
+                const popup = document.createElement('div');
+                popup.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: white;
+                    padding: 20px;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                    z-index: 10000;
+                    width: 90%;
+                    max-width: 400px;
+                `;
+                
+                popup.innerHTML = `
+                    <h3 style="margin-bottom: 15px; text-align: center;">✅ 공유 링크 생성 완료!</h3>
+                    <p style="font-size: 13px; color: #666; margin-bottom: 10px;">아래 링크를 길게 눌러 복사하세요:</p>
+                    <textarea style="width: 100%; height: 120px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 12px; font-family: monospace; resize: none;" readonly>${shareLink}</textarea>
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button onclick="navigator.clipboard.writeText('${shareLink}').then(() => alert('복사되었습니다!')).catch(() => alert('복사 실패'))" style="flex: 1; padding: 10px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">📋 복사하기</button>
+                        <button onclick="this.parentElement.parentElement.remove()" style="flex: 1; padding: 10px; background: #ddd; color: #333; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">닫기</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(popup);
                 
             } catch (error) {
                 alert('❌ 에러 발생: ' + error.message);
