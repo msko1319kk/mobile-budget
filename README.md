@@ -796,13 +796,17 @@
                 });
             });
 
-            const encoded = btoa(JSON.stringify(data));
-            const shareLink = `${window.location.href.split('?')[0]}?data=${encoded}&month=${monthKey}`;
+            const jsonString = JSON.stringify(data);
+            const encoded = encodeURIComponent(jsonString);
+            const baseUrl = window.location.href.split('?')[0];
+            const shareLink = `${baseUrl}?data=${encoded}&month=${monthKey}`;
             
-            navigator.clipboard.writeText(shareLink).then(() => {
-                alert('✅ 공유 링크가 복사되었습니다!\n이 링크를 A에게 보내면 당신이 작성한 데이터를 볼 수 있습니다.');
-            }).catch(() => {
-                alert('⚠️ 클립보드 복사 실패. 수동으로 복사해주세요:\n' + shareLink);
+            // Alert에 링크 표시
+            alert(`✅ 공유 링크:\n\n${shareLink}\n\n링크를 길게 누르면 복사됩니다!\n그 다음 카톡/문자로 보내주세요.`);
+            
+            // 클립보드 복사도 시도 (실패해도 상관없음)
+            navigator.clipboard.writeText(shareLink).catch(() => {
+                console.log('클립보드 복사 실패');
             });
         }
 
@@ -813,7 +817,7 @@
 
             if (data) {
                 try {
-                    const decoded = atob(data);
+                    const decoded = decodeURIComponent(data);
                     isViewMode = true;
                     
                     document.getElementById('viewModeNotice').innerHTML = '<div class="view-mode">👀 뷰어 모드 (수정 불가)</div>';
@@ -826,6 +830,7 @@
                     
                     if (month) {
                         document.getElementById('yearMonth').value = month;
+                        updateMonthDisplay();
                     }
 
                     const parsedData = JSON.parse(decoded);
