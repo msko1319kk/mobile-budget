@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>규규네 가계부 입력 폼</title>
+    <title>규규네 가계부</title>
     <style>
         * {
             margin: 0;
@@ -777,6 +777,19 @@
 
         function generateShareLink() {
             try {
+                // 코드 입력받기
+                const code = prompt('공유 코드를 입력하세요 (예: abc1319):');
+                
+                if (!code) {
+                    alert('코드 입력이 취소되었습니다.');
+                    return;
+                }
+                
+                if (code.length < 3) {
+                    alert('코드는 3자 이상이어야 합니다.');
+                    return;
+                }
+                
                 const monthKey = getMonthKey();
                 const data = {};
 
@@ -801,10 +814,15 @@
                     });
                 });
 
-                const jsonString = JSON.stringify(data);
-                const encoded = encodeURIComponent(jsonString);
+                // 코드로 localStorage에 저장
+                localStorage.setItem(`shared_${code}`, JSON.stringify({
+                    data: data,
+                    month: monthKey,
+                    createdAt: new Date().toISOString()
+                }));
+
                 const baseUrl = window.location.href.split('?')[0];
-                const shareLink = `${baseUrl}?data=${encoded}&month=${monthKey}`;
+                const shareLink = `${baseUrl}?code=${code}`;
                 
                 // 팝업 생성
                 const popup = document.createElement('div');
@@ -823,9 +841,10 @@
                 `;
                 
                 popup.innerHTML = `
-                    <h3 style="margin-bottom: 15px; text-align: center;">✅ 공유 링크 생성 완료!</h3>
-                    <p style="font-size: 13px; color: #666; margin-bottom: 10px;">아래 링크를 길게 눌러 복사하세요:</p>
-                    <textarea style="width: 100%; height: 120px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 12px; font-family: monospace; resize: none;" readonly>${shareLink}</textarea>
+                    <h3 style="margin-bottom: 15px; text-align: center;">✅ 공유 준비 완료!</h3>
+                    <p style="font-size: 13px; color: #666; margin-bottom: 10px;">아래 링크를 A에게 보내세요:</p>
+                    <textarea style="width: 100%; height: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 12px; font-family: monospace; resize: none;" readonly>${shareLink}</textarea>
+                    <p style="font-size: 12px; color: #999; margin-top: 10px; text-align: center;">코드: <strong>${code}</strong></p>
                     <div style="margin-top: 15px; display: flex; gap: 10px;">
                         <button onclick="navigator.clipboard.writeText('${shareLink}').then(() => alert('복사되었습니다!')).catch(() => alert('복사 실패'))" style="flex: 1; padding: 10px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">📋 복사하기</button>
                         <button onclick="this.parentElement.parentElement.remove()" style="flex: 1; padding: 10px; background: #ddd; color: #333; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">닫기</button>
@@ -842,14 +861,22 @@
 
         function loadSharedData() {
             const params = new URLSearchParams(window.location.search);
-            const data = params.get('data');
-            const month = params.get('month');
+            const code = params.get('code');
 
-            if (data) {
+            if (code) {
                 try {
-                    console.log('공유 데이터 감지됨');
-                    const decoded = decodeURIComponent(data);
-                    console.log('디코딩 완료');
+                    console.log('공유 코드 감지됨:', code);
+                    const sharedData = localStorage.getItem(`shared_${code}`);
+                    
+                    if (!sharedData) {
+                        alert('❌ 코드를 찾을 수 없습니다.');
+                        loadMonthData();
+                        return;
+                    }
+                    
+                    const parsed = JSON.parse(sharedData);
+                    const data = parsed.data;
+                    const month = parsed.month;
                     
                     isViewMode = true;
                     
@@ -866,13 +893,10 @@
                         updateMonthDisplay();
                     }
 
-                    const parsedData = JSON.parse(decoded);
-                    console.log('파싱 완료:', parsedData);
-                    
-                    Object.keys(parsedData).forEach(type => {
+                    Object.keys(data).forEach(type => {
                         const container = document.getElementById(`${type}Container`);
                         if (container) {
-                            container.innerHTML = parsedData[type].map((item) => 
+                            container.innerHTML = data[type].map((item) => 
                                 createItemHTML(type, item, true)
                             ).join('');
                         }
