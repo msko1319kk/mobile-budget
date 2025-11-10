@@ -659,6 +659,7 @@
 
             localStorage.setItem(`budget_${monthKey}`, JSON.stringify(data));
             calculateSummary();
+            alert('✅ 저장되었습니다!');
         }
 
         function loadMonthData() {
@@ -775,39 +776,44 @@
         }
 
         function generateShareLink() {
-            const monthKey = getMonthKey();
-            const data = {};
+            alert('공유 준비 중...');
+            
+            try {
+                const monthKey = getMonthKey();
+                const data = {};
 
-            Object.keys(defaultData).forEach(type => {
-                data[type] = [];
-                const container = document.getElementById(`${type}Container`);
-                const items = container.querySelectorAll('.item-group');
-                
-                items.forEach(item => {
-                    const nameInput = item.querySelector('.item-name');
-                    const dayInput = item.querySelector('.item-day');
-                    const amountInput = item.querySelector(`input[class*="${type}-expense"]`);
+                Object.keys(defaultData).forEach(type => {
+                    data[type] = [];
+                    const container = document.getElementById(`${type}Container`);
+                    if (!container) return;
                     
-                    data[type].push({
-                        name: nameInput.value,
-                        day: dayInput.value,
-                        amount: parseInt(amountInput.value) || 0
+                    const items = container.querySelectorAll('.item-group');
+                    items.forEach(item => {
+                        const nameInput = item.querySelector('.item-name');
+                        const dayInput = item.querySelector('.item-day');
+                        const amountInput = item.querySelector(`input[class*="${type}-expense"]`);
+                        
+                        if (nameInput && dayInput && amountInput) {
+                            data[type].push({
+                                name: nameInput.value || '',
+                                day: dayInput.value || '',
+                                amount: parseInt(amountInput.value) || 0
+                            });
+                        }
                     });
                 });
-            });
 
-            const jsonString = JSON.stringify(data);
-            const encoded = encodeURIComponent(jsonString);
-            const baseUrl = window.location.href.split('?')[0];
-            const shareLink = `${baseUrl}?data=${encoded}&month=${monthKey}`;
-            
-            // Alert에 링크 표시
-            alert(`✅ 공유 링크:\n\n${shareLink}\n\n링크를 길게 누르면 복사됩니다!\n그 다음 카톡/문자로 보내주세요.`);
-            
-            // 클립보드 복사도 시도 (실패해도 상관없음)
-            navigator.clipboard.writeText(shareLink).catch(() => {
-                console.log('클립보드 복사 실패');
-            });
+                const jsonString = JSON.stringify(data);
+                const encoded = encodeURIComponent(jsonString);
+                const baseUrl = window.location.href.split('?')[0];
+                const shareLink = `${baseUrl}?data=${encoded}&month=${monthKey}`;
+                
+                alert(`✅ 공유 링크 생성 완료!\n\n${shareLink}\n\n이 링크를 카톡/문자로 보내세요!`);
+                
+            } catch (error) {
+                alert('❌ 에러 발생: ' + error.message);
+                console.error(error);
+            }
         }
 
         function loadSharedData() {
@@ -817,7 +823,10 @@
 
             if (data) {
                 try {
+                    console.log('공유 데이터 감지됨');
                     const decoded = decodeURIComponent(data);
+                    console.log('디코딩 완료');
+                    
                     isViewMode = true;
                     
                     document.getElementById('viewModeNotice').innerHTML = '<div class="view-mode">👀 뷰어 모드 (수정 불가)</div>';
@@ -834,16 +843,22 @@
                     }
 
                     const parsedData = JSON.parse(decoded);
+                    console.log('파싱 완료:', parsedData);
+                    
                     Object.keys(parsedData).forEach(type => {
                         const container = document.getElementById(`${type}Container`);
-                        container.innerHTML = parsedData[type].map((item) => 
-                            createItemHTML(type, item, true)
-                        ).join('');
+                        if (container) {
+                            container.innerHTML = parsedData[type].map((item) => 
+                                createItemHTML(type, item, true)
+                            ).join('');
+                        }
                     });
 
                     calculateSummary();
+                    alert('✅ 공유된 데이터를 불러왔습니다!');
                 } catch (e) {
                     console.error('데이터 로드 실패:', e);
+                    alert('❌ 데이터 로드 실패: ' + e.message);
                     loadMonthData();
                 }
             } else {
