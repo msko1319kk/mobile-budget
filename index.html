@@ -60,6 +60,29 @@
             font-weight: 600;
         }
 
+        .month-selector button {
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.3);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .month-selector button:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
+        .month-display {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+        }
+
         .total-summary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -163,6 +186,11 @@
             box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
         }
 
+        .item-group input:disabled {
+            background: #f0f0f0;
+            color: #666;
+        }
+
         .input-label {
             font-size: 16px;
             color: #666;
@@ -188,6 +216,11 @@
             background: #5568d3;
         }
 
+        .add-item-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
         .remove-btn {
             background: #ff6b6b;
             color: white;
@@ -205,6 +238,11 @@
             background: #ff5252;
         }
 
+        .remove-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
         .footer {
             padding: 20px;
             background: #f8f9fa;
@@ -212,12 +250,30 @@
             gap: 10px;
         }
 
-        .copy-btn, .reset-btn {
-            flex: 1;
+        .save-btn {
+            flex: 2;
             padding: 15px;
             border: none;
             border-radius: 10px;
             font-size: 26px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #28a745;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .copy-btn, .share-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 20px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -233,13 +289,30 @@
             transform: translateY(-2px);
         }
 
+        .share-btn {
+            background: #51cf66;
+            color: white;
+        }
+
+        .share-btn:hover {
+            background: #40c057;
+            transform: translateY(-2px);
+        }
+
         .reset-btn {
-            background: #ddd;
-            color: #333;
+            flex: 0.6;
+            padding: 12px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
         .reset-btn:hover {
-            background: #ccc;
+            background: #ff5252;
         }
 
         .summary {
@@ -262,6 +335,17 @@
             font-weight: 700;
             color: #667eea;
         }
+
+        .view-mode {
+            background: #fff3cd;
+            padding: 10px;
+            text-align: center;
+            font-weight: 600;
+            color: #856404;
+            margin: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -270,10 +354,13 @@
             <h1>📱 모바일 가계부</h1>
             <div class="month-selector">
                 <label for="yearMonth">년월:</label>
-                <input type="month" id="yearMonth" onchange="loadMonthData()">
-                <button style="padding: 10px 12px; background: rgba(255,255,255,0.3); color: white; border: none; border-radius: 6px; font-size: 20px; cursor: pointer; font-weight: 600;" onclick="copyPreviousMonth()" title="이전달 데이터 복사">📋</button>
+                <input type="month" id="yearMonth" onchange="loadMonthData(); updateMonthDisplay()">
+                <div class="month-display" id="monthDisplay"></div>
+                <button onclick="copyPreviousMonth()" title="이전달 데이터 복사">↩️</button>
             </div>
         </div>
+
+        <div id="viewModeNotice"></div>
 
         <!-- 전체 합계 -->
         <div class="total-summary">
@@ -290,11 +377,11 @@
         <div class="content">
             <!-- 수입 섹션 -->
             <div class="section">
-                <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
                     <span>💰 수입</span>
                     <span class="toggle">▼</span>
                 </div>
-                <div class="section-content show">
+                <div class="section-content">
                     <div class="summary">
                         <div class="summary-item">
                             <label>소계</label>
@@ -302,13 +389,13 @@
                         </div>
                     </div>
                     <div id="incomeContainer"></div>
-                    <button class="add-item-btn" onclick="addNewItem('income')">+ 수입 항목 추가</button>
+                    <button class="add-item-btn" id="addIncomeBtn" onclick="addNewItem('income')">+ 수입 항목 추가</button>
                 </div>
             </div>
 
             <!-- 생활비 섹션 -->
             <div class="section">
-                <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
                     <span>🛒 생활비</span>
                     <span class="toggle">▼</span>
                 </div>
@@ -320,13 +407,13 @@
                         </div>
                     </div>
                     <div id="lifeContainer"></div>
-                    <button class="add-item-btn" onclick="addNewItem('life')">+ 생활비 항목 추가</button>
+                    <button class="add-item-btn" id="addLifeBtn" onclick="addNewItem('life')">+ 생활비 항목 추가</button>
                 </div>
             </div>
 
             <!-- 활동비 섹션 -->
             <div class="section">
-                <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
                     <span>👤 활동비</span>
                     <span class="toggle">▼</span>
                 </div>
@@ -338,13 +425,13 @@
                         </div>
                     </div>
                     <div id="activityContainer"></div>
-                    <button class="add-item-btn" onclick="addNewItem('activity')">+ 활동비 항목 추가</button>
+                    <button class="add-item-btn" id="addActivityBtn" onclick="addNewItem('activity')">+ 활동비 항목 추가</button>
                 </div>
             </div>
 
             <!-- 교육비 섹션 -->
             <div class="section">
-                <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
                     <span>📚 교육비</span>
                     <span class="toggle">▼</span>
                 </div>
@@ -356,13 +443,13 @@
                         </div>
                     </div>
                     <div id="educationContainer"></div>
-                    <button class="add-item-btn" onclick="addNewItem('education')">+ 교육비 항목 추가</button>
+                    <button class="add-item-btn" id="addEducationBtn" onclick="addNewItem('education')">+ 교육비 항목 추가</button>
                 </div>
             </div>
 
             <!-- 주거비 섹션 -->
             <div class="section">
-                <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
                     <span>🏠 주거비</span>
                     <span class="toggle">▼</span>
                 </div>
@@ -374,13 +461,13 @@
                         </div>
                     </div>
                     <div id="housingContainer"></div>
-                    <button class="add-item-btn" onclick="addNewItem('housing')">+ 주거비 항목 추가</button>
+                    <button class="add-item-btn" id="addHousingBtn" onclick="addNewItem('housing')">+ 주거비 항목 추가</button>
                 </div>
             </div>
 
             <!-- 저축 섹션 -->
             <div class="section">
-                <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
                     <span>🏦 저축</span>
                     <span class="toggle">▼</span>
                 </div>
@@ -392,13 +479,13 @@
                         </div>
                     </div>
                     <div id="savingsContainer"></div>
-                    <button class="add-item-btn" onclick="addNewItem('savings')">+ 저축 항목 추가</button>
+                    <button class="add-item-btn" id="addSavingsBtn" onclick="addNewItem('savings')">+ 저축 항목 추가</button>
                 </div>
             </div>
 
             <!-- 비정기 섹션 -->
             <div class="section">
-                <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
                     <span>📌 비정기</span>
                     <span class="toggle">▼</span>
                 </div>
@@ -410,14 +497,34 @@
                         </div>
                     </div>
                     <div id="miscContainer"></div>
-                    <button class="add-item-btn" onclick="addNewItem('misc')">+ 비정기 항목 추가</button>
+                    <button class="add-item-btn" id="addMiscBtn" onclick="addNewItem('misc')">+ 비정기 항목 추가</button>
+                </div>
+            </div>
+
+            <!-- 기타 섹션 -->
+            <div class="section">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
+                    <span>⭐ 기타 <span style="font-size: 15px; color: #999; font-weight: normal;">(이 달의 추가 지출 내역)</span></span>
+                    <span class="toggle">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="summary">
+                        <div class="summary-item">
+                            <label>소계</label>
+                            <div class="value" id="etcSummary">₩0</div>
+                        </div>
+                    </div>
+                    <div id="etcContainer"></div>
+                    <button class="add-item-btn" id="addEtcBtn" onclick="addNewItem('etc')">+ 기타 항목 추가</button>
                 </div>
             </div>
         </div>
 
         <div class="footer">
-            <button class="copy-btn" onclick="copyToClipboard()">📋 복사하기</button>
-            <button class="reset-btn" onclick="resetForm()">🔄 초기화</button>
+            <button class="save-btn" id="saveBtn" onclick="saveData()">💾 저장</button>
+            <button class="share-btn" id="shareBtn" onclick="generateShareLink()">🔗 공유</button>
+            <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()">📋</button>
+            <button class="reset-btn" id="resetBtn" onclick="resetForm()">초기화</button>
         </div>
     </div>
 
@@ -485,13 +592,19 @@
                 { name: '자동차세', day: '', amount: 0 },
                 { name: '조의금, 축의금 등', day: '1일', amount: 0 },
                 { name: '주민세, 기타 등등', day: '', amount: 0 }
+            ],
+            etc: [
+                { name: '기타항목1', day: '', amount: 0 }
             ]
         };
+
+        let isViewMode = false;
 
         const today = new Date();
         const year = today.getFullYear();
         const month = String(today.getMonth() + 1).padStart(2, '0');
         document.getElementById('yearMonth').value = `${year}-${month}`;
+        updateMonthDisplay();
 
         function toggleSection(header) {
             header.classList.toggle('collapsed');
@@ -512,7 +625,17 @@
             return document.getElementById('yearMonth').value;
         }
 
+        function updateMonthDisplay() {
+            const monthKey = getMonthKey();
+            const [year, month] = monthKey.split('-');
+            const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+            const displayText = `${year}년 ${monthNames[parseInt(month) - 1]}`;
+            document.getElementById('monthDisplay').textContent = displayText;
+        }
+
         function saveData() {
+            if (isViewMode) return;
+            
             const monthKey = getMonthKey();
             const data = {};
 
@@ -546,32 +669,32 @@
             Object.keys(data).forEach(type => {
                 const container = document.getElementById(`${type}Container`);
                 container.innerHTML = data[type].map((item) => 
-                    createItemHTML(type, item)
+                    createItemHTML(type, item, isViewMode)
                 ).join('');
             });
 
             calculateSummary();
         }
 
-        function createItemHTML(type, item) {
+        function createItemHTML(type, item, disabled = false) {
             return `
                 <div class="item-group">
                     <span class="input-label">항목명</span>
-                    <input type="text" class="item-name" value="${item.name}" style="font-size: 24px;" onchange="saveData()">
+                    <input type="text" class="item-name" value="${item.name}" style="font-size: 24px;" ${disabled ? 'disabled' : 'onchange="saveData()"'}>
                     
                     <span class="input-label">결제일</span>
-                    <input type="text" class="item-day" placeholder="예: 5일, 말일" value="${item.day}" style="font-size: 20px;" onchange="saveData()">
+                    <input type="text" class="item-day" placeholder="예: 5일, 말일" value="${item.day}" style="font-size: 20px;" ${disabled ? 'disabled' : 'onchange="saveData()"'}>
                     
                     <span class="input-label">금액</span>
-                    <input type="number" class="${type}-expense" placeholder="금액 입력" value="${item.amount}" style="font-size: 24px;" onchange="saveData()">
+                    <input type="number" class="${type}-expense" placeholder="금액 입력" value="${item.amount}" style="font-size: 24px;" ${disabled ? 'disabled' : 'onchange="saveData()"'}>
                     
-                    <button class="remove-btn" onclick="this.parentElement.remove(); saveData();">🗑️ 제거</button>
+                    <button class="remove-btn" ${disabled ? 'disabled' : ''} onclick="this.parentElement.remove(); saveData();">🗑️ 제거</button>
                 </div>
             `;
         }
 
         function calculateSummary() {
-            const types = ['income', 'life', 'activity', 'education', 'housing', 'savings', 'misc'];
+            const types = ['income', 'life', 'activity', 'education', 'housing', 'savings', 'misc', 'etc'];
             let totalIncome = 0;
             let totalExpense = 0;
             
@@ -622,7 +745,8 @@
                 { id: 'education', label: '📚 교육비' },
                 { id: 'housing', label: '🏠 주거비' },
                 { id: 'savings', label: '🏦 저축' },
-                { id: 'misc', label: '📌 비정기' }
+                { id: 'misc', label: '📌 비정기' },
+                { id: 'etc', label: '⭐ 기타' }
             ];
 
             types.forEach(type => {
@@ -648,6 +772,63 @@
             navigator.clipboard.writeText(text).then(() => {
                 alert('✅ 복사되었습니다!\n스프레드시트에 붙여넣기하세요.');
             });
+        }
+
+        function generateShareLink() {
+            const monthKey = getMonthKey();
+            const savedData = localStorage.getItem(`budget_${monthKey}`);
+            
+            if (!savedData) {
+                alert('저장된 데이터가 없습니다.');
+                return;
+            }
+
+            const encoded = btoa(savedData);
+            const shareLink = `${window.location.href}?data=${encoded}&month=${monthKey}`;
+            
+            navigator.clipboard.writeText(shareLink).then(() => {
+                alert('✅ 공유 링크가 복사되었습니다!\n이 링크를 A에게 보내면 당신이 작성한 데이터를 볼 수 있습니다.');
+            });
+        }
+
+        function loadSharedData() {
+            const params = new URLSearchParams(window.location.search);
+            const data = params.get('data');
+            const month = params.get('month');
+
+            if (data) {
+                try {
+                    const decoded = atob(data);
+                    isViewMode = true;
+                    
+                    document.getElementById('viewModeNotice').innerHTML = '<div class="view-mode">👀 뷰어 모드 (수정 불가)</div>';
+                    document.getElementById('copyBtn').disabled = false;
+                    document.getElementById('shareBtn').disabled = true;
+                    document.getElementById('resetBtn').disabled = true;
+                    document.getElementById('yearMonth').disabled = true;
+                    
+                    Array.from(document.querySelectorAll('.add-item-btn')).forEach(btn => btn.disabled = true);
+                    
+                    if (month) {
+                        document.getElementById('yearMonth').value = month;
+                    }
+
+                    const parsedData = JSON.parse(decoded);
+                    Object.keys(parsedData).forEach(type => {
+                        const container = document.getElementById(`${type}Container`);
+                        container.innerHTML = parsedData[type].map((item) => 
+                            createItemHTML(type, item, true)
+                        ).join('');
+                    });
+
+                    calculateSummary();
+                } catch (e) {
+                    console.error('데이터 로드 실패:', e);
+                    loadMonthData();
+                }
+            } else {
+                loadMonthData();
+            }
         }
 
         function resetForm() {
@@ -684,7 +865,7 @@
             }
         }
 
-        loadMonthData();
+        loadSharedData();
     </script>
 </body>
 </html>
