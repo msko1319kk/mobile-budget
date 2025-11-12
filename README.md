@@ -777,19 +777,6 @@
 
         function generateShareLink() {
             try {
-                // 코드 입력받기
-                const code = prompt('공유 코드를 입력하세요 (예: abc1319):');
-                
-                if (!code) {
-                    alert('코드 입력이 취소되었습니다.');
-                    return;
-                }
-                
-                if (code.length < 3) {
-                    alert('코드는 3자 이상이어야 합니다.');
-                    return;
-                }
-                
                 const monthKey = getMonthKey();
                 const data = {};
 
@@ -806,23 +793,22 @@
                         
                         if (nameInput && dayInput && amountInput) {
                             data[type].push({
-                                name: nameInput.value || '',
-                                day: dayInput.value || '',
-                                amount: parseInt(amountInput.value) || 0
+                                n: nameInput.value || '',
+                                d: dayInput.value || '',
+                                a: parseInt(amountInput.value) || 0
                             });
                         }
                     });
                 });
 
-                // 코드로 localStorage에 저장
-                localStorage.setItem(`shared_${code}`, JSON.stringify({
-                    data: data,
-                    month: monthKey,
-                    createdAt: new Date().toISOString()
-                }));
-
+                // JSON을 최소화 (공백 제거)
+                const jsonString = JSON.stringify(data);
+                const encoded = btoa(unescape(encodeURIComponent(jsonString)));
                 const baseUrl = window.location.href.split('?')[0];
-                const shareLink = `${baseUrl}?code=${code}`;
+                const shareLink = `${baseUrl}?s=${encoded}&m=${monthKey}`;
+                
+                console.log('원본 길이:', jsonString.length);
+                console.log('인코딩된 길이:', shareLink.length);
                 
                 // 팝업 생성
                 const popup = document.createElement('div');
@@ -841,13 +827,13 @@
                 `;
                 
                 popup.innerHTML = `
-                    <h3 style="margin-bottom: 15px; text-align: center;">✅ 공유 준비 완료!</h3>
+                    <h3 style="margin-bottom: 15px; text-align: center;">✅ 공유 링크 생성 완료!</h3>
                     <p style="font-size: 13px; color: #666; margin-bottom: 10px;">아래 링크를 A에게 보내세요:</p>
-                    <textarea style="width: 100%; height: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 12px; font-family: monospace; resize: none;" readonly>${shareLink}</textarea>
-                    <p style="font-size: 12px; color: #999; margin-top: 10px; text-align: center;">코드: <strong>${code}</strong></p>
+                    <textarea style="width: 100%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 11px; font-family: monospace; resize: none; word-break: break-all;" readonly>${shareLink}</textarea>
+                    <p style="font-size: 11px; color: #999; margin-top: 8px;">링크 길이: ${shareLink.length}자</p>
                     <div style="margin-top: 15px; display: flex; gap: 10px;">
-                        <button onclick="navigator.clipboard.writeText('${shareLink}').then(() => alert('복사되었습니다!')).catch(() => alert('복사 실패'))" style="flex: 1; padding: 10px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">📋 복사하기</button>
-                        <button onclick="this.parentElement.parentElement.remove()" style="flex: 1; padding: 10px; background: #ddd; color: #333; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">닫기</button>
+                        <button onclick="navigator.clipboard.writeText('${shareLink}').then(() => alert('복사되었습니다!')).catch(() => alert('복사 실패'))" style="flex: 1; padding: 10px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">📋 복사하기</button>
+                        <button onclick="this.parentElement.parentElement.remove()" style="flex: 1; padding: 10px; background: #ddd; color: #333; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">닫기</button>
                     </div>
                 `;
                 
@@ -861,22 +847,24 @@
 
         function loadSharedData() {
             const params = new URLSearchParams(window.location.search);
-            const code = params.get('code');
+            const encoded = params.get('s');
+            const month = params.get('m');
 
-            if (code) {
+            if (encoded) {
                 try {
-                    console.log('공유 코드 감지됨:', code);
-                    const sharedData = localStorage.getItem(`shared_${code}`);
+                    console.log('공유 데이터 감지됨');
+                    const decoded = decodeURIComponent(escape(atob(encoded)));
+                    const parsedData = JSON.parse(decoded);
                     
-                    if (!sharedData) {
-                        alert('❌ 코드를 찾을 수 없습니다.');
-                        loadMonthData();
-                        return;
-                    }
-                    
-                    const parsed = JSON.parse(sharedData);
-                    const data = parsed.data;
-                    const month = parsed.month;
+                    // 필드명 복원 (n->name, d->day, a->amount)
+                    const restoredData = {};
+                    Object.keys(parsedData).forEach(type => {
+                        restoredData[type] = parsedData[type].map(item => ({
+                            name: item.n || '',
+                            day: item.d || '',
+                            amount: item.a || 0
+                        }));
+                    });
                     
                     isViewMode = true;
                     
@@ -893,10 +881,10 @@
                         updateMonthDisplay();
                     }
 
-                    Object.keys(data).forEach(type => {
+                    Object.keys(restoredData).forEach(type => {
                         const container = document.getElementById(`${type}Container`);
                         if (container) {
-                            container.innerHTML = data[type].map((item) => 
+                            container.innerHTML = restoredData[type].map((item) => 
                                 createItemHTML(type, item, true)
                             ).join('');
                         }
